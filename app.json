@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "MMBurial",
+    "slug": "MMBurial",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "facebookScheme": "fb2682893525260582",
+    "facebookAppId": "2682893525260582",
+    "facebookDisplayName": "MMBurial",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "facebookAutoInitEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "buildNumber": "1.0.2",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mytechpal.mmburial",
+      "config": {
+        "googleSignIn": {
+
+          "reservedClientId": "com.googleusercontent.apps.194662291794-adeo4sh1qksul575j53nn0m19tdnbf5m"
+        }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "91D096509F6679E8431EC4A7B42C7CDBAF816CD1",
+          "apiKey": "AIzaSyDfFzpiGz4ofpmA22jVNn0L6aSVDinaCRc"
+        }
+      },
+
+      "package": "example.mytechpal.mmburial",
+
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+
+  }
+}

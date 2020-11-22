@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "194662291794",
+    "firebase_url": "https://mm-burial.firebaseio.com",
+    "project_id": "mm-burial",
+    "storage_bucket": "mm-burial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194662291794:android:0c08fd6dd354207c58c28b",
+        "android_client_info": {
+          "package_name": "example.mytechpal.mmburial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194662291794-0qmrbo1vliplm678httgnifp0gc4q902.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIfHzk8Ts6DL8ETVMtLhaCuTWsqe_uLQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194662291794-0qmrbo1vliplm678httgnifp0gc4q902.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
