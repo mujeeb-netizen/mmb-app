@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import firebase from "../firebase/firebase";
 import * as Location from 'expo-location';
 import { add, set } from 'react-native-reanimated';
+import DropDownPicker from 'react-native-dropdown-picker';
 export default function Feedback({ navigation, navigation: { goBack } }) {
     function wait(timeout) {
         return new Promise(resolve => {
@@ -18,7 +19,7 @@ export default function Feedback({ navigation, navigation: { goBack } }) {
         });
     }
     const [refreshing, setRefreshing] = React.useState(false);
-    const [sub, setSub] = React.useState(null);
+    const [sub, setSub] = React.useState("Enquiry");
     const [issub, setIssub] = React.useState(true);
     const [msg, setMsg] = React.useState(null);
     const [ismsg, setIsmsg] = React.useState(true);
@@ -80,18 +81,23 @@ export default function Feedback({ navigation, navigation: { goBack } }) {
                     <Card title="Feedback" >
 
                        
-                        <TextInput
-                            isFocused={false}
-                            inputStyles={{ marginTop: '1%' }}
-                            customLabelStyles={{ alignText: 'right' }}
-                            containerStyles={{ marginBottom: '9%', borderWidth: 1, borderColor: 'rgb(32, 137, 220)' }}
-                            labelStyles={{ fontSize: 17, color: 'rgb(32, 137, 220)' }}
-                            label="Subject" value={sub}
-                            onChangeText={(text) => { setSub(text); setIssub(true) }}
-                            style={{ width: '100%', color: 'black', marginBottom: issub ? '10%' : '0%' }}
+                        <DropDownPicker
+                            items={[
+                                { label: 'Enquiry', value: 'Enquiry' },
+                                { label: 'Techinal Issue', value: 'Techinal Issue' },
+                                { label: 'Suggestion', value: 'Suggestion' },
+                                { label: 'Complaint', value: 'Complaint' },
 
+                            ]}
+                            defaultValue={sub}
+                            containerStyle={{ height: 40, width: '100%', marginBottom: '5%' }}
+                            style={{ backgroundColor: '#fafafa' }}
+                            itemStyle={{
+                                justifyContent: 'flex-start'
+                            }}
+                            dropDownStyle={{ backgroundColor: '#fafafa' }}
+                            onChangeItem={item => { setSub(item.value) }}
                         />
-
 
                         <Text style={{ marginBottom: issub ? '0%' : '10%', color: 'red', display: issub ? 'none' : 'flex' }}>Please enter Subject.</Text>
 
@@ -115,7 +121,7 @@ export default function Feedback({ navigation, navigation: { goBack } }) {
                                 <Button mode="clear" loading color="rgb(32, 137, 220)"
                                 >.. </Button>
                                 :
-                                <Button onPress={() => savefeedback()} color="rgb(32, 137, 220)" mode="contained" style={{ width: '90%', alignSelf: 'center', marginBottom: '5%' }} buttonStyle={{ width: '90%' }} >Save</Button>
+                                <Button onPress={() => savefeedback()} color="rgb(32, 137, 220)" mode="contained" style={{ width: '90%', alignSelf: 'center', marginBottom: '5%' }} buttonStyle={{ width: '90%' }} >Submit</Button>
                         }
 
 

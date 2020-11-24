@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, CheckBox,ScrollView, KeyboardAvoidingView } from 'react-native';
 import { AsyncStorage } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Icon, Overlay, Header, ButtonGroup } from 'react-native-elements'
+import { Icon, Overlay, Header, ButtonGroup,Card } from 'react-native-elements'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteUser } from '../store/actions'
 import { Button, Caption, Switch, TextInput } from 'react-native-paper';
@@ -89,8 +89,8 @@ export default function JoinMMBGroup({ navigation, navigation: { goBack } }) {
 >
 
 
-                        <View style={{ padding: '7%', paddingBottom: '0%', flex: 1, alignItems: 'center', marginTop: '0%', }}>
-                            <Text style={{ fontSize: hp('3%'), fontWeight: '300', color: 'rgb(32, 137, 220)', marginBottom: '10%' }}>Join MMB Group</Text>
+                        <Card title="Join MMB Group" style={{ padding: '7%', paddingBottom: '0%', flex: 1, alignItems: 'center', marginTop: '0%', }}>
+ 
 
 
 
@@ -113,22 +113,25 @@ export default function JoinMMBGroup({ navigation, navigation: { goBack } }) {
 
                              
 
-                            <View style={styles.checkboxContainer}>
-                              
-                                <Switch color="#0095ff" value={adminCost} onValueChange={sadaq} />
-                                <Text style={styles.label}>Administration</Text>
-                                <Caption style={{ marginLeft: '38%', marginTop: '2%' }}>Sadaqh {"\u00A3"}2 - One Off</Caption>
+                            <View style={{  padding: '3%', flexDirection: 'row', flex: 1 }}>
+                                <View style={{ flexDirection: 'row', flex:1 }}>
+                                    <Switch color="#0095ff" style={{}} value={adminCost} onValueChange={sadaq} />
+                                    <Text style={{ marginTop:'2%' }}>Administration</Text>
+                                </View>
+                                    <Caption style={{ marginLeft: '4%', alignSelf: 'flex-end' }}>Sadaqh {"\u00A3"}2 - One Off</Caption>
 
                             </View>
 
-                            <View style={styles.checkboxContainer}>
-                                <Switch color="#0095ff"  value={gift} onValueChange={setGift} />
+                            <View style={{ padding: '3%', flexDirection: 'row', flex: 1 }}>
+                                <Switch color="#0095ff" value={gift} onValueChange={setGift} />
 
-                                <Text style={styles.label}>Yes, I would like Gift Aid claimed on my donations</Text>
+                                <Text style={{ alignSelf: 'flex-end' }}>Yes, I would like Gift Aid claimed on my donations</Text>
+
                             </View>
+                            
 
 
-                        </View>
+                        </Card>
                         {!isSign ?
                             <Button mode="clear" loading color="rgb(32, 137, 220)"
                             >.. </Button>
@@ -158,8 +161,8 @@ const styles = StyleSheet.create({
         flexDirection: Platform.OS == 'ios' ? "column-reverse" : "row",
         marginBottom: 20,
         alignItems: "center",
-        backgroundColor: '#f3f2f7'
-        , padding: '3%',
+         
+     padding: '3%',
         marginTop:"5%"
 
     },

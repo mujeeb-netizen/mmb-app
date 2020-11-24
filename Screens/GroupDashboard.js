@@ -17,13 +17,16 @@ export default function GroupDashboard({ navigation }) {
     const iscg = useSelector(state => state.iscg)
     const fname = useSelector(state => state.fname)
     const lname= useSelector(state => state.lname)
+    const docid = useSelector(state => state.docid)
     const [visible, setVisible] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
     const [isDone, setisDone] = React.useState(false);
     const [member, setMember] = React.useState([]);
     const [loved, setLoved] = React.useState([]);
     const [GD, setGD] = React.useState([]);
+    const [PM, setPM] = React.useState([]);
     const [visible2, setVisible2] = React.useState(false);
+    const [joined, setJoined] = React.useState(null);
     const [visible3, setVisible3] = React.useState(false);
     const [visible4, setVisible4] = React.useState(false);
     const [visible5, setVisible5] = React.useState(false);
@@ -34,218 +37,347 @@ export default function GroupDashboard({ navigation }) {
     var [reason2, setReason2] = React.useState(null);
 
     async function savePic() {
-        if (pickerRes == null) {
-            alert("Please Select Image")
-        }
-        else if (reason == null || reason == "")
-        {
+        if (reason == null || reason == "") {
             alert("Please Enter Reason")
         }
         else {
+            if (pickerRes == null) {
+               
+                const newLink2 = {
+                    reason: reason,
+                    docUrl: "null",
+                    groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
+                }
+                const user12 = firebase.db.collection("fund_request").add(newLink2);
+
+                toggleOverlay5()
+
+
+
+
+                const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
+                voteRef2.get().then(doc => {
+                    if (doc.exists) {
+
+                        const prev = doc.data().messages
+                        const newMessage = {
+
+                            _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                            system: true,
+                            text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                            createdAt: new Date().toUTCString(),
+                            user: {
+                                _id: "",
+                                name: "Admin",
+
+                            },
+
+
+                        }
+                        const message_ = [...prev, newMessage];
+
+                        return voteRef2.update({ messages: message_ });
+                    }
+                    else {
+
+
+                        const newLink = {
+                            _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                            system: true,
+                            text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                            createdAt: new Date().toUTCString(),
+                            user: {
+                                _id: "",
+                                name: "Admin",
+
+                            },
+
+                        };
+                        const user12 = firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')).set(newLink);
+                    }
+                }) 
+
+
+
+
+                alert("Successfully Requested!")
+                navigation.navigate('Home')
+
+
+            }
+            else { 
+
             const a = await fetch(pickerRes.uri)
-            
-             FileSystem.readAsStringAsync(pickerRes.uri,
-                 { encoding: FileSystem.EncodingType.Base64 })
-                 .then((res) => {
-                     let base64Img = `data:`+a.headers.map["content-type"] + `;base64,${res}`
-                     let apiUrl = 'https://api.cloudinary.com/v1_1/du3j5iidy/image/upload';
 
-                     let data = {
-                         "file": base64Img,
-                         "upload_preset": "lg0kpmhq",
-                     }
+            FileSystem.readAsStringAsync(pickerRes.uri,
+                { encoding: FileSystem.EncodingType.Base64 })
+                .then((res) => {
+                    let base64Img = `data:` + a.headers.map["content-type"] + `;base64,${res}`
+                    let apiUrl = 'https://api.cloudinary.com/v1_1/du3j5iidy/image/upload';
 
-
-                     fetch(apiUrl, {
-                         body: JSON.stringify(data),
-                         headers: {
-                             'content-type': 'application/json'
-                         },
-                         method: 'POST',
-                     }).then(async r => {
-                         let data = await r.json()
-                         console.log(data, "hh")
-                        
-                         const newLink2 = {
-                             reason: reason,
-                             docUrl: data.url,
-                             groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
-                         }
-                         const user12 = firebase.db.collection("fund_request").add(newLink2);
-
-                         toggleOverlay5()
+                    let data = {
+                        "file": base64Img,
+                        "upload_preset": "lg0kpmhq",
+                    }
 
 
+                    fetch(apiUrl, {
+                        body: JSON.stringify(data),
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        method: 'POST',
+                    }).then(async r => {
+                        let data = await r.json()
+                        console.log(data, "hh")
 
+                        const newLink2 = {
+                            reason: reason,
+                            docUrl: data.url,
+                            groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
+                        }
+                        const user12 = firebase.db.collection("fund_request").add(newLink2);
 
-                         const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
-                         voteRef2.get().then(doc => {
-                             if (doc.exists) {
-
-                                 const prev = doc.data().messages
-                                 const newMessage = {
-                                     
-                                     _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
-                                     system:true,
-                                     text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') +".",
-                                     createdAt: new Date().toUTCString(),
-                                     user: {
-                                         _id: "",
-                                         name: "Admin",
-
-                                     },
-
-
-                                 }
-                                 const message_ = [...prev, newMessage];
-
-                                 return voteRef2.update({ messages: message_ });
-                             }
-                             else {
-
-
-                                 const newLink = {
-                                     _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
-                                     system: true,
-                                     text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
-                                     createdAt: new Date().toUTCString(),
-                                     user: {
-                                         _id: "",
-                                         name: "Admin",
-
-                                     },
-
-                                 };
-                                 const user12 = firebase.db.collection("group_messages").doc(gid).set(newLink);
-                             }
-                         })
+                        toggleOverlay5()
 
 
 
-                          
-                                 alert("Successfully Requested!")
-                                 navigation.navigate('Home')
-                         
 
-                     }).catch(err => console.log(err))
+                        const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
+                        voteRef2.get().then(doc => {
+                            if (doc.exists) {
+
+                                const prev = doc.data().messages
+                                const newMessage = {
+
+                                    _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                                    system: true,
+                                    text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                                    createdAt: new Date().toUTCString(),
+                                    user: {
+                                        _id: "",
+                                        name: "Admin",
+
+                                    },
+
+
+                                }
+                                const message_ = [...prev, newMessage];
+
+                                return voteRef2.update({ messages: message_ });
+                            }
+                            else {
+
+
+                                const newLink = {
+                                    _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                                    system: true,
+                                    text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                                    createdAt: new Date().toUTCString(),
+                                    user: {
+                                        _id: "",
+                                        name: "Admin",
+
+                                    },
+
+                                };
+                                const user12 = firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')).set(newLink);
+                            }
+                        })
 
 
 
-                 });
-          
 
-           
-             
+                        alert("Successfully Requested!")
+                        navigation.navigate('Home')
+
+
+                    }).catch(err => console.log(err))
+
+
+
+                });
+
+
+
+        }
           
 
         }
+        setReason(null)
     }
     async function savePic2() {
-        if (pickerRes2 == null) {
-            alert("Please Select Image")
-        }
-        else if (reason2 == null || reason2 == "")
-        {
+        if (reason2 == null || reason2 == "") {
             alert("Please Enter Reason")
         }
         else {
-            const a = await fetch(pickerRes2.uri)
-            
-             FileSystem.readAsStringAsync(pickerRes2.uri,
-                 { encoding: FileSystem.EncodingType.Base64 })
-                 .then((res) => {
-                     let base64Img = `data:`+a.headers.map["content-type"] + `;base64,${res}`
-                     let apiUrl = 'https://api.cloudinary.com/v1_1/du3j5iidy/image/upload';
+            if (pickerRes2 == null) {
+               
+                const newLink2 = {
+                    reason: reason2,
+                    docUrl: "null",
+                    groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
+                }
+                const user12 = firebase.db.collection("public_claim").add(newLink2);
 
-                     let data = {
-                         "file": base64Img,
-                         "upload_preset": "lg0kpmhq",
-                     }
-
-
-                     fetch(apiUrl, {
-                         body: JSON.stringify(data),
-                         headers: {
-                             'content-type': 'application/json'
-                         },
-                         method: 'POST',
-                     }).then(async r => {
-                         let data = await r.json()
-                         console.log(data, "hh")
-                        
-                         const newLink2 = {
-                             reason: reason,
-                             docUrl: data.url,
-                             groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
-                         }
-                         const user12 = firebase.db.collection("public_claim").add(newLink2);
-                         toggleOverlay4()
+                toggleOverlay4()
 
 
 
 
-                         const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
-                         voteRef2.get().then(doc => {
-                             if (doc.exists) {
+                const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
+                voteRef2.get().then(doc => {
+                    if (doc.exists) {
 
-                                 const prev = doc.data().messages
-                                 const newMessage = {
-                                     
-                                     _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
-                                     system:true,
-                                     text: "Admin" + ": " + "Public Fund Claim Recived by " +fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
-                                     createdAt: new Date().toUTCString(),
-                                     user: {
-                                         _id: "",
-                                         name: "Admin",
+                        const prev = doc.data().messages
+                        const newMessage = {
 
-                                     },
+                            _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                            system: true,
+                            text: "Admin" + ": " + "Public Claim Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                            createdAt: new Date().toUTCString(),
+                            user: {
+                                _id: "",
+                                name: "Admin",
 
-
-                                 }
-                                 const message_ = [...prev, newMessage];
-
-                                 return voteRef2.update({ messages: message_ });
-                             }
-                             else {
+                            },
 
 
-                                 const newLink = {
-                                     _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
-                                     system: true,
-                                     text: "Admin" + ": " + "Public Fund Claim Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
-                                     createdAt: new Date().toUTCString(),
-                                     user: {
-                                         _id: "",
-                                         name: "Admin",
+                        }
+                        const message_ = [...prev, newMessage];
 
-                                     },
-
-                                 };
-                                 const user12_ = firebase.db.collection("group_messages").doc(gid).set(newLink);
-                             }
-                         })
+                        return voteRef2.update({ messages: message_ });
+                    }
+                    else {
 
 
+                        const newLink = {
+                            _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                            system: true,
+                            text: "Admin" + ": " + "Public Claim Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                            createdAt: new Date().toUTCString(),
+                            user: {
+                                _id: "",
+                                name: "Admin",
 
+                            },
 
-                                  
-                                 alert("Successfully Requested!")
-                                 navigation.navigate('Home')
-                         
-
-                     }).catch(err => console.log(err))
+                        };
+                        const user12 = firebase.db.collection("group_messages").doc(gid).set(newLink);
+                      
+                    }
+                    setReason(null)
+                })
 
 
 
-                 });
-          
 
-           
-             
-          
+                alert("Successfully Requested!")
+                navigation.navigate('Home')
+
+
+            }
+            else {
+
+                const a = await fetch(pickerRes.uri)
+
+                FileSystem.readAsStringAsync(pickerRes.uri,
+                    { encoding: FileSystem.EncodingType.Base64 })
+                    .then((res) => {
+                        let base64Img = `data:` + a.headers.map["content-type"] + `;base64,${res}`
+                        let apiUrl = 'https://api.cloudinary.com/v1_1/du3j5iidy/image/upload';
+
+                        let data = {
+                            "file": base64Img,
+                            "upload_preset": "lg0kpmhq",
+                        }
+
+
+                        fetch(apiUrl, {
+                            body: JSON.stringify(data),
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            method: 'POST',
+                        }).then(async r => {
+                            let data = await r.json()
+                            console.log(data, "hh")
+
+                            const newLink2 = {
+                                reason: reason2,
+                                docUrl: data.url,
+                                groupId: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')
+                            }
+                            const user12 = firebase.db.collection("public_claim").add(newLink2);
+
+                            toggleOverlay4()
+
+
+
+
+                            const voteRef2 = await firebase.db.collection("group_messages").doc(isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''));
+                            voteRef2.get().then(doc => {
+                                if (doc.exists) {
+
+                                    const prev = doc.data().messages
+                                    const newMessage = {
+
+                                        _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                                        system: true,
+                                        text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                                        createdAt: new Date().toUTCString(),
+                                        user: {
+                                            _id: "",
+                                            name: "Admin",
+
+                                        },
+
+
+                                    }
+                                    const message_ = [...prev, newMessage];
+
+                                    return voteRef2.update({ messages: message_ });
+                                }
+                                else {
+
+
+                                    const newLink = {
+                                        _id: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''),
+                                        system: true,
+                                        text: "Admin" + ": " + "Fund Release Request Recived by " + fname.replace(/['"]+/g, '') + " " + lname.replace(/['"]+/g, '') + ".",
+                                        createdAt: new Date().toUTCString(),
+                                        user: {
+                                            _id: "",
+                                            name: "Admin",
+
+                                        },
+
+                                    };
+                                    const user12 = firebase.db.collection("group_messages").doc(gid).set(newLink);
+                                }
+                              
+                            })
+
+
+
+
+                            alert("Successfully Requested!")
+                            navigation.navigate('Home')
+
+
+                        }).catch(err => console.log(err))
+
+
+
+                    });
+
+
+
+            }
+
 
         }
+        setReason2(null)
     }
 
 
@@ -282,6 +414,8 @@ export default function GroupDashboard({ navigation }) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         getGroupData()
+        getStart()
+        getPM()
         getGroupDetail(isjg == "null" ? iscg : isjg)
       
         wait(2000).then(() => { setRefreshing(false) });
@@ -289,6 +423,7 @@ export default function GroupDashboard({ navigation }) {
 
     var members=[]
     var lovedone=[]
+    var count=[]
     const toggleOverlay = () => {
         setVisible(!visible);
     };
@@ -306,8 +441,12 @@ export default function GroupDashboard({ navigation }) {
     };
     useEffect(() => {
         console.log('here')
+        getStart()
+        getPM()
         getGroupData()
+
         getGroupDetail(isjg == "null" ? iscg : isjg)
+     
 
     }, []);
     function publiccl() {
@@ -320,12 +459,42 @@ export default function GroupDashboard({ navigation }) {
         setVisible5(true)
 
     }
+    async function getStart() {  
+        const voteRef = await firebase.db.collection('users').doc(docid);
+
+        voteRef.get().then(doc => {
+            if (doc.exists) {
+                if (doc.data().CreatedGroup.UID) {
+
+
+                    var myDate = doc.data().CreatedGroup.joined.toDate().toDateString();
+                   
+                    setJoined(myDate)
+                    // alert(doc.data().CreatedGroup.created)
+                }
+                else {
+                    var myDate = doc.data().JoinedGroup.joined.toDate().toDateString();
+                  
+                    setJoined(myDate)
+                  
+                    //  alert(doc.data().JoinedGroup.joined)
+                }
+
+            }
+        })
+    }
+
     async function getGroupData() {
         setMember(null)
         members = []
         lovedone = []
         setLoading(true)
         console.log('in function')
+
+
+      
+
+
         await firebase.db.collection('users').where("CreatedGroup.UID", "==", (isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')))
             .get()
             .then(function (querySnapshot) {
@@ -334,6 +503,7 @@ export default function GroupDashboard({ navigation }) {
 
                     members.push(doc.data().fname + " " + doc.data().lname)
                     setMember(members)
+                    
                     if (doc.data().LovedOne.groupId == (isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''))) {
  lovedone.push(doc.data().LovedOne.pname)
                     setLoved(lovedone)
@@ -355,6 +525,7 @@ export default function GroupDashboard({ navigation }) {
 
                     members.push(doc.data().fname + " " + doc.data().lname)
                     setMember(members)
+                    
                     if (doc.data().LovedOne.groupId == (isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, ''))) {
  lovedone.push(doc.data().LovedOne.pname)
                     setLoved(lovedone)
@@ -372,6 +543,29 @@ export default function GroupDashboard({ navigation }) {
         console.log(lovedone, "locved")
         
         setLoading(false)
+    }
+    async function getPM() {
+         
+         
+      setPM([])
+        count = []
+
+        await firebase.db.collection('payment_made').where("groupId", "==", (isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')))
+            .get()
+            .then(function (querySnapshot) {
+                querySnapshot.forEach(function (doc) {
+
+                    count.push(doc.data().userId)
+                   setPM(count)
+                 
+                    
+                });
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            });
+        console.log(PM.length)
+         
     }
 
     async function getGroupDetail(id) {
@@ -421,12 +615,53 @@ export default function GroupDashboard({ navigation }) {
                     {isjg.replace(/['"]+/g, '') == "MMBGeneralGroup" ?
                         <>
                             <Text style={{ alignSelf: 'center', fontSize: 40, fontWeight: 'bold', color: '#0095ff', marginBottom: '3%' }}>{GD.groupName ? GD.groupName : "Loading"}</Text>
+                            <Divider/>
+                            <View style={{ borderTopWidth: 1, marginTop: '5%', flexDirection: 'row' }}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-start', fontSize: 19, }}>
+                                        Start Date
+                                        </Text>
+
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-end', fontSize: 19, }}>
+                                        { joined}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-start', fontSize: 19, }}>
+                                      Payments Made
+                                        </Text>
+
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-end', fontSize: 19, }}>
+                                        {PM != null ? PM.length : 0}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-start', fontSize: 19, }}>
+                                       Total Contributed 
+                                        </Text>
+
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-end', fontSize: 19, }}>
+                                        {GD.collectedAmount}
+                                    </Text>
+                                </View>
+                            </View>
                             <Button onPress={toggleOverlay} backgroundColor="#0095ff" style={{
                                 backgroundColor: '#0095ff', marginBottom: '2%', marginTop: '3%'
                             }} mode="contained">
                                 Share App 
                             </Button>
 
+                          
                             <View style={{
 
 
@@ -434,25 +669,29 @@ export default function GroupDashboard({ navigation }) {
                                 alignItems: 'center'
                             }}>
 
-                                <Button onPress={() => { navigation.navigate("Chat", { gid: isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '') }) }} backgroundColor="#0095ff" style={{
+                                <Button onPress={() => { publiccl() }} backgroundColor="#0095ff" style={{
                                     backgroundColor: '#0095ff', marginBottom: '2%'
                                 }} mode="contained">
-                                    Chat
+                                    Public Fund Claim
+                        </Button>
+                                <Button onPress={() => { publiccl2() }} backgroundColor="#0095ff" style={{
+                                    backgroundColor: '#0095ff', marginBottom: '2%'
+                                }} mode="contained">
+                                    Fund Release Request
                         </Button>
 
 
 
 
-
                             </View>
-
                         </>
                         :
                         <>
                             <Text style={{ alignSelf: 'center', fontSize: 40, fontWeight: 'bold', color: '#0095ff', marginBottom: '3%' }}>{GD.groupName ? GD.groupName : "Loading"}</Text>
 
                     <Text style={{ alignSelf: 'center', fontSize: 35, fontWeight: 'bold', color: 'black', marginBottom: '1%' }}> {"\u00A3"}{typeof GD.collectedAmount != 'undefined' ? GD.collectedAmount : "Loading"}</Text>
-                    {
+                        
+                            {
                         member ?
                         <TouchableOpacity onPress={toggleOverlay2} >
                         <Caption style={{ alignSelf: 'center', fontSize: 20, marginTop: '3%' }}> {loading == false ? (member.length + " " + "Members") : loading}</Caption>
@@ -472,8 +711,36 @@ export default function GroupDashboard({ navigation }) {
                                 LOADING
                             </Caption>
                     }
-                    <Caption style={{ alignSelf: 'center', fontSize: 20, marginTop: '3%' }}>Unique ID: {isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')}</Caption>
-                  <Button onPress={toggleOverlay} backgroundColor="#0095ff" style={{
+                            <Caption style={{ alignSelf: 'center', fontSize: 20, marginTop: '3%' }}>Unique ID: {isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')}</Caption>
+                            <Divider />
+                            <View style={{ borderTopWidth:1, marginTop: '5%', flexDirection: 'row' }}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-start', fontSize: 19, }}>
+                                        Start Date
+                                        </Text>
+
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-end', fontSize: 19, }}>
+                                        {joined}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-start', fontSize: 19, }}>
+                                        Payments Made
+                                        </Text>
+
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={{ alignSelf: 'flex-end', fontSize: 19, }}>
+                                        {PM != null || PM != "undefined" || typeof PM != "undefined" ? PM.length : 0}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <Button onPress={toggleOverlay} backgroundColor="#0095ff" style={{
                         backgroundColor: '#0095ff', marginBottom: '2%', marginTop:'3%'
                     }} mode="contained">
                         Share Unique ID {isjg == "null" ? iscg.replace(/['"]+/g, '') : isjg.replace(/['"]+/g, '')}
@@ -543,7 +810,7 @@ export default function GroupDashboard({ navigation }) {
 
 
                 </Card>
-                <Overlay isVisible={visible5} onBackdropPress={toggleOverlay5} overlayStyle={{ height: '50%' }}>
+                <Overlay isVisible={visible5} onBackdropPress={toggleOverlay5} overlayStyle={{ height: '100%' }}>
                     <View style={{
                         position: "absolute",
                         top: 0,
@@ -564,7 +831,7 @@ export default function GroupDashboard({ navigation }) {
                         <Button contentStyle={{ backgroundColor: '#0095ff' }} mode="contained" onPress={() => savePic()}> Send </Button>
                     </View>
                 </Overlay>
-                <Overlay isVisible={visible4} onBackdropPress={toggleOverlay4} overlayStyle={{ height: '50%' }}>
+                <Overlay isVisible={visible4} onBackdropPress={toggleOverlay4} overlayStyle={{ height: '100%' }}>
                     <View style={{
                         position: "absolute",
                         top: 0,

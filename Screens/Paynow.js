@@ -80,6 +80,31 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
         console.log(cardtype)}
 
     }
+    async function countplus(gid) {
+
+        try {
+
+            const newLink = {
+                groupId: gid,
+                userId: uid.replace(/['"]+/g, '')
+
+
+            };
+            const user12 = firebase.db.collection("payment_made").add(newLink);
+
+        }
+        catch (err) {
+
+
+            Alert.alert(err);
+
+        }
+        finally {
+            //const history = createHashHistory();
+            //history.go("/login");
+        }
+
+    }
     async function payit() {
         setIsSign(false)
 
@@ -97,7 +122,7 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
 
                                 amount: tot,
                                 currency: "gbp",
-                                groupId: "MmbGeneralGroup",
+                                groupId: "MMBGeneralGroup",
                                 customer: doc.data().customer
 
                             }
@@ -115,7 +140,8 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
                                     .then(function (response5) {
                                         
                                         if (response5.status == "200") {
-                                            updateDonateAmount(parseInt(actual)+2)
+                                            updateDonateAmount(parseInt(actual) + 2)
+                                            countplus("MMBGeneralGroup")
                                             alert("Successfully Donated")
                                             navigation.navigate("Home")
 
@@ -221,6 +247,7 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
                                                         //onsole.log(response4)
                                                         if (response4.status == "200") {
                                                             updateDonateAmount(parseInt(actual) + 2)
+                                                            countplus("MMBGeneralGroup")
                                                             alert("Successfully Donated")
                                                             navigation.navigate("Home")
 
@@ -315,6 +342,7 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
                                         console.log(response5)
                                         if (response5.status == "200") {
                                             updateDonateAmount(actual)
+                                            countplus("MMBGeneralGroup")
                                             alert("Successfully Donated")
                                             navigation.navigate("Home")
 
@@ -417,6 +445,7 @@ export default function Paynow({ route, navigation, navigation: { goBack } }) {
 //onsole.log(response4)
                                                                 if (response4.status == "200") {
                                                                     updateDonateAmount(actual)
+                                                                    countplus("MMBGeneralGroup")
                                                                     alert("Successfully Donated")
                                                                     navigation.navigate("Home")
 

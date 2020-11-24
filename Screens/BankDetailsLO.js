@@ -54,6 +54,31 @@ export default function BankDetailsLO({ route, navigation, navigation: { goBack 
     const islo = useSelector(state => state.islo)
     const isjg = useSelector(state => state.isjg)
     const customerId = useSelector(state => state.customerId)
+    async function countplus(gid) {
+
+        try {
+
+            const newLink = {
+                groupId: gid,
+                userId: uid.replace(/['"]+/g, '')
+
+
+            };
+            const user12 = firebase.db.collection("payment_made").add(newLink);
+
+        }
+        catch (err) {
+
+
+            Alert.alert(err);
+
+        }
+        finally {
+            //const history = createHashHistory();
+            //history.go("/login");
+        }
+
+    }
     async function addtoUser(customerId) {
 
         try {
@@ -260,7 +285,7 @@ export default function BankDetailsLO({ route, navigation, navigation: { goBack 
 
                                                                     updateTotal(doc.data().amount)
                                                                     createSubcription_(response.data.id, response1.data.id, response2.data.id, response3.data.id)
-
+                                                                    countplus(groupid)
 
                                                                     setIsSign(true)
 

@@ -191,6 +191,31 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
         }
 
     }
+    async function countplus(gid) {
+
+        try {
+           
+            const newLink = {
+                groupId: gid,
+                userId: uid.replace(/['"]+/g, '')
+                 
+
+            };
+            const user12 = firebase.db.collection("payment_made").add(newLink);
+
+        }
+        catch (err) {
+
+
+            Alert.alert(err);
+
+        }
+        finally {
+            //const history = createHashHistory();
+            //history.go("/login");
+        }
+
+    }
     async function JoinGroupbyId() {
 
        
@@ -328,7 +353,8 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
                                                                         addtoUser(response.data.id);
                                                                         updatecustomerId(response.data.id);
                                                                         createSubcription_(response.data.id, response1.data.id, response2.data.id, response3.data.id)
-                                                                        AsyncStorage.setItem('IsSQ', issq2);
+                                                                            countplus(groupId)
+                                                                            AsyncStorage.setItem('IsSQ', issq2);
                                                                         AsyncStorage.setItem('IsAns', isans2);
                                                                         AsyncStorage.setItem('address', address)
 
@@ -504,6 +530,8 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
                                                                     addtoUser(response.data.id);
                                                                     updatecustomerId(response.data.id);
                                                                     createSubcription_(response.data.id, response1.data.id, response2.data.id, response3.data.id)
+                                                                    countplus(groupId)
+
                                                                     AsyncStorage.setItem('IsSQ', issq2);
                            AsyncStorage.setItem('IsAns', isans2);
                          AsyncStorage.setItem('address', address)
@@ -602,7 +630,7 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
 
                 }
               
-                setIsSign(true)
+                
             
 
          }
@@ -741,6 +769,7 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
 
                                                                    updatecustomerId_(actual);
                                                                    createSubcription_(response.data.id, response1.data.id, response2.data.id, response3.data.id)
+                                                                    countplus("MMBGeneralGroup")
                                                                     setIsSign(true)
                                                                     alert("Successfully Donated")
                                                                     navigation.navigate("Home")
@@ -938,7 +967,7 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
                                         <View style={{flex:1}}>
                                             <Text style={{alignSelf:'flex-end', fontSize: 11, }}>
                                                 {"\u00A3"}
-                                                {(1 / 100) * parseInt(total) + 0.20}
+                                                {((1 / 100) * parseInt(total) + 0.20).toFixed(2)}
                                             </Text>
 
                                         </View>
@@ -1019,8 +1048,8 @@ export default function BankDetails({ route, navigation, navigation: { goBack } 
                                             </View>
                                     <View style={{ flex: 1 }}>
                                     <Caption style={{ fontSize: 11, fontWeight: 'bold', alignSelf:'flex-end' }}>
-                                                {"\u00A3"}
-                                                {(1/100)*parseInt(total) + 0.20 }
+                                            {"\u00A3"}
+                                            {((1 / 100) * parseInt(total) + 0.20).toFixed(2)}
 
                                         </Caption>
 
